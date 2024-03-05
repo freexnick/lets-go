@@ -21,19 +21,9 @@ func main() {
 		logger: logger,
 	}
 
-	mux := http.NewServeMux()
-
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
-
-	mux.HandleFunc("/", app.home)
-	mux.HandleFunc("/snippet/view", app.snippetView)
-	mux.HandleFunc("/snippet/create", app.snippetCreate)
-
 	logger.Info("starting server", slog.String("port", *port))
 
-	err := http.ListenAndServe(*port, mux)
+	err := http.ListenAndServe(*port, app.routes())
 	logger.Error(err.Error())
 	os.Exit(1)
 }
