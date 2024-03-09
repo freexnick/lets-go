@@ -8,7 +8,7 @@ import (
 )
 
 type templateData struct {
-	CurrentYear uint16
+	CurrentYear int
 	Snippet     models.Snippet
 	Snippets    []models.Snippet
 	Form        interface{}
