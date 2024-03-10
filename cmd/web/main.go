@@ -8,6 +8,7 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+	"regexp"
 	"text/template"
 	"time"
 
@@ -22,6 +23,7 @@ type application struct {
 	snippets       *models.SnippetModel
 	users          *models.UserModel
 	templateCache  map[string]*template.Template
+	emailRx        regexp.Regexp
 	formDecoder    *form.Decoder
 	sessionManager *scs.SessionManager
 }
@@ -52,6 +54,7 @@ func main() {
 	sessionManager := scs.New()
 	sessionManager.Store = mysqlstore.New(db)
 	sessionManager.Lifetime = 12 * time.Hour
+	EmailRX := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 	app := &application{
 		logger:         logger,
@@ -60,6 +63,7 @@ func main() {
 		templateCache:  templateCache,
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,
+		emailRx:        *EmailRX,
 	}
 
 	tlsConfig := &tls.Config{
