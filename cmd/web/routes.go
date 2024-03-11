@@ -1,6 +1,7 @@
 package main
 
 import (
+	"lets-go-snippetbox/ui"
 	"net/http"
 
 	"github.com/justinas/alice"
@@ -8,9 +9,9 @@ import (
 
 func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	fileServer := http.FileServer(http.FS(ui.Files))
 
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+	mux.Handle("/static/{filepath...}", fileServer)
 
 	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
 
