@@ -19,6 +19,7 @@ import (
 )
 
 type application struct {
+	debug          bool
 	logger         *slog.Logger
 	snippets       models.SnippetModelInterface
 	users          models.UserModelInterface
@@ -31,6 +32,7 @@ type application struct {
 func main() {
 	port := flag.String("port", ":3000", "Server Port")
 	dsn := flag.String("dsn", "root:admin@/snippetbox?parseTime=true", "MySQL data source name")
+	debug := flag.Bool("debug", false, "Enable debug mode")
 	flag.Parse()
 
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
@@ -57,6 +59,7 @@ func main() {
 	EmailRX := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
 
 	app := &application{
+		debug:          *debug,
 		logger:         logger,
 		snippets:       &models.SnippetModel{DB: db},
 		users:          &models.UserModel{DB: db},
