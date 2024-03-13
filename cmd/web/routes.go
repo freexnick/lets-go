@@ -15,6 +15,8 @@ func (app *application) routes() http.Handler {
 
 	dynamic := alice.New(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
 
+	mux.HandleFunc("/ping", ping)
+
 	mux.Handle("/", dynamic.ThenFunc(app.home))
 
 	mux.Handle("/snippet/view/{id}", dynamic.ThenFunc(app.snippetView))
